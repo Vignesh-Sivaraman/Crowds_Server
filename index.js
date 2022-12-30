@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/mongoConnect");
+const { Server } = require("socket.io");
 
 dotenv.config();
 
@@ -42,42 +43,49 @@ const server = app.listen(process.env.PORT || 3005, () => {
 //   },
 // });
 
-// let activeUsers = [];
+const io = new Server(server, {
+  // pingTimeout: 6000,
+  cors: {
+    origin: true,
+  },
+});
 
-// io.on("connection", (socket) => {
-//   // add user
-//   socket.on("new-user-add", (newUserId) => {
-//     // if user is not added previously
-//     if (!activeUsers.some((user) => user.userId === newUserId)) {
-//       activeUsers.push({ userId: newUserId, socketId: socket.id });
-//       console.log("New User Connected", activeUsers);
-//     }
-//     // send all active users to new user
-//     io.emit("get-users", activeUsers);
-//   });
+let activeUsers = [];
 
-//   // user disconnect
-//   socket.on("disconnect", () => {
-//     // remove user from active users
-//     activeUsers = activeUsers.filter((user) => user.socketId !== socket.id);
-//     console.log("User Disconnected", activeUsers);
-//     // send all active users to all users
-//     io.emit("get-users", activeUsers);
-//   });
+io.on("connection", (socket) => {
+  // add user
+  socket.on("new-user-add", (newUserId) => {
+    // if user is not added previously
+    if (!activeUsers.some((user) => user.userId === newUserId)) {
+      activeUsers.push({ userId: newUserId, socketId: socket.id });
+      console.log("New User Connected", activeUsers);
+    }
+    // send all active users to new user
+    io.emit("get-users", activeUsers);
+  });
 
-//   // send message to specific user
+  // user disconnect
+  socket.on("disconnect", () => {
+    // remove user from active users
+    activeUsers = activeUsers.filter((user) => user.socketId !== socket.id);
+    console.log("User Disconnected", activeUsers);
+    // send all active users to all users
+    io.emit("get-users", activeUsers);
+  });
 
-//   socket.on("send-message", (data) => {
-//     console.log(data, activeUsers);
-//     const { receiverId } = data;
-//     const user = activeUsers.find(
-//       (user) => user.userId.toString() === receiverId.toString()
-//     );
-//     console.log(user);
-//     console.log("Sending from socket to :", receiverId);
-//     console.log("Data: ", data);
-//     if (user) {
-//       io.to(user.socketId).emit("receive-message", data);
-//     }
-//   });
-// });
+  // send message to specific user
+
+  socket.on("send-message", (data) => {
+    console.log(data, activeUsers);
+    const { receiverId } = data;
+    const user = activeUsers.find(
+      (user) => user.userId.toString() === receiverId.toString()
+    );
+    console.log(user);
+    console.log("Sending from socket to :", receiverId);
+    console.log("Data: ", data);
+    if (user) {
+      io.to(user.socketId).emit("receive-message", data);
+    }
+  });
+});
