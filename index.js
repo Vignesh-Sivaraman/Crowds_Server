@@ -35,16 +35,7 @@ const server = app.listen(process.env.PORT || 3005, () => {
   console.log("I am listening");
 });
 
-// Socket server
-
-// const io = require("Socket.io")(server, {
-//   cors: {
-//     origin: true,
-//   },
-// });
-
 const io = new Server(server, {
-  // pingTimeout: 6000,
   cors: {
     origin: true,
   },

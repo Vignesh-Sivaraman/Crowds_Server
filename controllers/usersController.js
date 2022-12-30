@@ -11,19 +11,22 @@ const getUser = (req, res) => {
 
 const updateUser = (req, res) => {
   const updateUser =
-    "UPDATE users SET `userName`=?,`city`=?,`profilePic`=?,`coverPic`=? WHERE id=? ";
-  const values = [
-    req.body.name,
-    req.body.city,
-    req.body.profilePic,
-    req.body.coverPic,
-    req.body.userId,
-  ];
-  db.query(updateUser, [values], (err, data) => {
-    if (err) return res.status(500).json(err);
-    if (data.affectedRows > 0) return res.json("Updated!");
-    return res.status(403).json("You can update only your post!");
-  });
+    "UPDATE users SET `userName` =?,`city` =?,`profilePic` =?,`coverPic` =? WHERE idusers =? ";
+  db.query(
+    updateUser,
+    [
+      req.body.name,
+      req.body.city,
+      req.body.profilePic,
+      req.body.coverPic,
+      req.body.userId,
+    ],
+    (err, data) => {
+      if (err) return res.status(500).json(err);
+      if (data.affectedRows > 0) return res.json("Updated!");
+      return res.status(403).json("You can update only your post!");
+    }
+  );
 };
 
 const addRelations = (req, res) => {
