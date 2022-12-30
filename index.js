@@ -37,7 +37,9 @@ const server = app.listen(process.env.PORT || 3005, () => {
 // Socket server
 
 const io = require("Socket.io")(server, {
-  cors: true,
+  cors: {
+    origin: true,
+  },
 });
 
 let activeUsers = [];
