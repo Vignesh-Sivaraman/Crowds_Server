@@ -9,7 +9,6 @@ const getLikes = (req, res) => {
 };
 
 const addLike = (req, res) => {
-  console.log(req.body);
   const addlike = "INSERT INTO likes (`likeUserId`,`likePostId`) VALUES(?)";
   const values = [req.body.likeUserId, req.body.likePostId];
   db.query(addlike, [values], (err, data) => {
@@ -19,7 +18,6 @@ const addLike = (req, res) => {
 };
 
 const deleteLike = (req, res) => {
-  console.log(req.body);
   const deletelike = `DELETE FROM likes WHERE likeUserId = ${req.body.likeUserId} AND likePostId = ${req.body.likePostId} `;
   //   const values = [req.body.likeUserId, req.body.likePostId];
   db.query(deletelike, (err, data) => {

@@ -31,7 +31,6 @@ const addRelations = (req, res) => {
     "INSERT INTO relations (`followerUserId`,`followedUserId`) VALUES (?)";
   const { followerId, followedId } = req.body;
   const values = [followerId, followedId];
-  console.log(values);
   db.query(addrelation, [values], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json("Following");

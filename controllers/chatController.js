@@ -12,7 +12,7 @@ const createChat = async (req, res) => {
   }
 };
 
-const userChat = async (req, res) => {
+const getChat = async (req, res) => {
   try {
     const chat = await Chat.find({ members: { $in: [req.body.userId] } });
     res.status(200).json(chat);
@@ -32,4 +32,4 @@ const findChat = async (req, res) => {
   }
 };
 
-module.exports = { createChat, userChat, findChat };
+module.exports = { createChat, getChat, findChat };
