@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const register = (req, res) => {
   try {
     // check for existing user
-    const { name, email, password, city } = req.body;
+    const { name, email, password, city, profilePic, coverPic } = req.body;
     const checkUser = "SELECT * FROM users WHERE userName = ?";
 
     db.query(checkUser, [name], (err, data) => {
@@ -20,9 +20,16 @@ const register = (req, res) => {
       let hashedPassword = bcrypt.hashSync(password, salt);
 
       const createUser =
-        "INSERT INTO users (`userName`, `email`, `password`,`city`) value(?)";
+        "INSERT INTO users (`userName`, `email`, `password`,`city`, `profilePic`, `coverPic`) value(?)";
 
-      const userValues = [name, email, hashedPassword, city];
+      const userValues = [
+        name,
+        email,
+        hashedPassword,
+        city,
+        profilePic,
+        coverPic,
+      ];
 
       db.query(createUser, [userValues], (err, data) => {
         if (err)

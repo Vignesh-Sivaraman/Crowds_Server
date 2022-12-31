@@ -11,5 +11,8 @@ router
   .route("/deleterelation")
   .post(authenticate, userController.deleteRelations);
 router.route("/getfriends").post(authenticate, userController.getFriends);
+router
+  .route("/getsuggestions")
+  .post(authenticate, userController.getSuggestions);
 
 module.exports = router;

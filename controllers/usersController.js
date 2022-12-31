@@ -23,8 +23,14 @@ const updateUser = (req, res) => {
     ],
     (err, data) => {
       if (err) return res.status(500).json(err);
-      if (data.affectedRows > 0) return res.json("Updated!");
-      return res.status(403).json("You can update only your post!");
+      if (data.affectedRows > 0) {
+        const getuser = "SELECT * FROM users WHERE idusers = ?";
+        db.query(getuser, [req.body.userId], (err, data) => {
+          if (err) return res.status(500).json(err);
+          const { password, ...info } = data[0];
+          return res.status(200).json(info);
+        });
+      }
     }
   );
 };
@@ -76,6 +82,31 @@ const getFriends = (req, res) => {
   });
 };
 
+const getSuggestions = (req, res) => {
+  const suggestions =
+    "SELECT followedUserId FROM relations WHERE followerUserId = ?";
+  db.query(suggestions, [req.body.followerId], (err, friendsdata) => {
+    if (err) return res.status(500).json(err);
+    friendsdata = friendsdata.map((e) => e.followedUserId);
+
+    // return res.status(200).json(data);
+
+    db.query(
+      "SELECT idusers,userName,profilePic FROM users WHERE idusers != ?",
+      [req.body.followerId],
+      (err, userdata) => {
+        if (err) return res.status(500).json(err);
+        // return res.status(200).json(data);
+
+        userdata = userdata.filter((id) => {
+          return !friendsdata.includes(id.idusers);
+        });
+        return res.status(200).json(userdata);
+      }
+    );
+  });
+};
+
 module.exports = {
   getUser,
   updateUser,
@@ -83,4 +114,5 @@ module.exports = {
   getRelations,
   deleteRelations,
   getFriends,
+  getSuggestions,
 };
