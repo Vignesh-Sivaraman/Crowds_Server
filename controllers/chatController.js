@@ -2,9 +2,15 @@ const Chat = require("../models/ChatModel");
 
 const createChat = async (req, res) => {
   try {
-    const chat = await Chat.create({
-      members: [req.body.senderId, req.body.receiverId],
+    const existingchat = await Chat.findOneAndDelete({
+      members: { $all: [req.body.senderId, req.body.receiverId] },
     });
+
+    if (!existingchat) {
+      const chat = await Chat.create({
+        members: [req.body.senderId, req.body.receiverId],
+      });
+    }
 
     res.status(200).json(chat);
   } catch (err) {
