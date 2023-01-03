@@ -6,5 +6,6 @@ const router = express.Router();
 router.route("/createchat").post(authenticate, chatController.createChat);
 router.route("/getchat").post(authenticate, chatController.getChat);
 router.route("/findchat").post(authenticate, chatController.findChat);
+router.route("/deletechat").post(authenticate, chatController.deleteChat);
 
 module.exports = router;
