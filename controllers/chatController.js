@@ -20,7 +20,6 @@ const createChat = async (req, res) => {
 
 const deleteChat = async (req, res) => {
   try {
-    console.log(req.body);
     const chat = await Chat.findOneAndDelete({
       members: { $all: [req.body.firstId, req.body.secondId] },
     });
